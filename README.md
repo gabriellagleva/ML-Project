@@ -87,9 +87,6 @@ On the models where we artificially balanced the data, the random guess baseline
 
 To create our final baseline we made a logistic regression model, a simple binary classifier that predicts class probability. We flattened the images to 256x256 pixels and fed it to the Scikit-learn logistic regression model. By treating each pixel as an independent input feature, logistic regression provides a baseline for more complicated models like CNNs which can recognize features and should be better at image classification. 
 
-model \= LogisticRegression(max\_iter\=1000)   
-model.fit(X\_train, y\_train.ravel()) 
-
 Our logistic regression model obtained an accuracy of 68.43%, a malignant F1 score of 79, and an AUC of .62.
 
 ![image](https://github.com/user-attachments/assets/9147a7ec-dc42-4e53-89ff-626d007e254c)
