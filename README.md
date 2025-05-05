@@ -1,7 +1,7 @@
 # ML-Project
 
 
---Introduction--
+Introduction
 
 
 In the US, breast cancer makes up one-third of all new cancer cases in women every year  
@@ -9,3 +9,4 @@ In the US, breast cancer makes up one-third of all new cancer cases in women eve
 
 
 
+![NoRegSummary](https://github.com/user-attachments/assets/5c2964ae-c4cb-4a8f-8bb9-767648f6a481)
