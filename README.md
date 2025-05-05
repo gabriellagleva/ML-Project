@@ -184,8 +184,10 @@ With fine-tuning, our model got better at predicting malignant cases,  jumping f
 
 **Oversampling with ResNet50**  
 Our dataset CMMD had a significantly imbalanced dataset:  
+
 Benign count: 1416  
 Malignant count: 4174  
+
 Because of that, the model was learning much more about malignant cases and had worse accuracy when it came to the underrepresented benign class. Just as we did with the scratch CNN model, our solution was to augment the benign class pictures to get the same number of pictures for each class. We augmented 2758 benign images with rotation, zoom, flip, and horizontal and vertical shift to create the additional benign data. No other features of the model were changed. 
 
 
