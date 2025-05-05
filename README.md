@@ -18,10 +18,16 @@ However, we did find that ResNet trained significantly faster, leading us to cho
 
 **Preprocessing**  
 Before we could train our model on the CMMD data, the data set needed to be cleaned. To clean it, we removed all label columns, except for abnormality, classification, and file location. During initial testing, we discovered that training on the uncropped images was highly ineffective because the model would only guess malignant, even with regularization techniques applied.   
-![][image1]  
+
+![image](https://github.com/user-attachments/assets/58806d28-a7cb-4321-bed3-a780ad69f351)
+
+
 We suspected that large portions of the black background surrounding the breast in the images made it difficult for the model to identify important information. To crop the images, we identified the border between the white breast image and the black background. After cropping, we padded and resized the images to 600 by 600\.
 
 **Example of Cropping**
+
+![image](https://github.com/user-attachments/assets/6324cbb6-3185-49f3-8386-79a82ed58147)
+
 
 **Project Design (remember to link to photos)**  
 Along with the ResNet-based transfer learning model, we created a smaller custom CNN made from scratch. The smaller model is valuable because at runtime it evaluates quicker than bigger models due to the simpler design. 
@@ -36,10 +42,8 @@ Accuracy tells us how much of the test set our model correctly predicts. It is c
 **F1 Score**  
 F1 score is calculated using precision and recall.
 
-T: True  
-F: False  
-P: Positive  
-N: Negative
+![image](https://github.com/user-attachments/assets/edcdce4a-3593-43e6-a5a1-7e06d00baa26)
+
 
 Precision is calculated by dividing the number of correct positive identifications by the total number of samples the model labeled as positive, demonstrating how often a model misidentifies a negative sample. In our case, this would be mislabeling a benign sample as malignant, which, though it could create unnecessary work for a human reviewer, is not life-threatening.
 
@@ -52,13 +56,16 @@ The F1 score is the harmonic mean of precision and recall. It outputs a number t
 The ROC (Receiver Operating Characteristic) curve compares the true positive rate (recall) to the false positive rate across different classification thresholds. A *threshold* is the cutoff probability the model uses to decide whether a sample is classified as malignant or benign. For example, a threshold of 0.5 means the model labels any sample with a predicted probability over 50% as malignant. Lowering the threshold increases sensitivity (recall) but can also increase false positives.
 
 The AUC (Area Under the Curve) summarizes the ROC curve in a single number, where a score of 1.0 is perfect classification, and .5 is no better than random guessing.  
-[![][image2]](https://www.evidentlyai.com/classification-metrics/explain-roc-curve)
+
+![image](https://github.com/user-attachments/assets/25146e05-8644-435e-bca9-2d8f5854c891)
+
 
 **Confusion Matrix**
 
 A confusion matrix compares the model's predictions to the correct labels, demonstrating the specific classes the model misidentifies. In our case, we were able to visualize the rate of false negatives that could have been hidden when using accuracy alone.
 
-![][image3]
+![image](https://github.com/user-attachments/assets/ba038af6-b846-435e-9d12-2a4fc3861ede)
+
 
 **Baselines**
 
@@ -85,11 +92,14 @@ model.fit(X\_train, y\_train.ravel())
 
 Our logistic regression model obtained an accuracy of 68.43%, a malignant F1 score of 79, and an AUC of .62.
 
-![][image4]![][image5]
+![image](https://github.com/user-attachments/assets/9147a7ec-dc42-4e53-89ff-626d007e254c)
+
 
 The confusion matrix showed that it was not only guessing the majority class, but closer examination revealed that it guessed malignant 74.4% of the time, almost the exact same percent as there were malignant images in the data set. This, combined with the low benign precision score, made it seem that it was learning to mirror the class distribution.
 
-**![][image6]**  
+![image](https://github.com/user-attachments/assets/f820eb85-322d-483d-8253-073e7a608b6b)
+
+
 With this baseline in mind, we aimed for a model with higher precision for the benign class to prove that our model was learning real features of the data, not just the class distribution.
 
 # Custom CNN Architecture: Results And Discussion
@@ -97,8 +107,11 @@ With this baseline in mind, we aimed for a model with higher precision for the b
 For our custom CNN architecture, we went through an iterative process. Our first goal was to overfit the data to prove that our model was learning real features of the data and not simply guessing the majority class. We used two convolutional layers, a dense layer and an output layer with no regularization.
 
 **Custom Model: No Regularization Techniques**  
-**![][image7]**![][image8]   
-![][image9]
+
+![image](https://github.com/user-attachments/assets/f5a08a01-b0c1-4cdf-a51b-59ef78170bc4)
+![image](https://github.com/user-attachments/assets/8087d214-91a3-405e-8450-6c0d451a7dac)
+![image](https://github.com/user-attachments/assets/c06faafe-d473-439d-819c-91eba22e7742)
+
 
 This architecture obtained an accuracy of 98%, and a malignant F1 score of .83. By having such high training accuracy compared with the valuation accuracy, it was clear the model was learning each individual image in our training set, proving that it was learning image specific features- not just guessing the majority class. 
 
@@ -106,9 +119,14 @@ This architecture obtained an accuracy of 98%, and a malignant F1 score of .83. 
 After overfitting the data we aimed to create a CNN model that still learned real features of the data but was no longer over-fitting.  
 Our first architecture had two convolutional layers and a dense layer at the end. The small number of layers allows us to train faster given our limited computational abilities. It’s also a good base for us to build upon with more layers and regularization techniques. In all following custom CNN models, batch size was 32\.
 
+![image](https://github.com/user-attachments/assets/697b5ded-97d0-4c30-a8e1-2f0c0dc88de9)
+
+
 The custom CNN with no regularization techniques obtained an accuracy of 72%, an AUC of .62 and a malignant F1 score of .82. While these results were better than random guessing, the model was clearly over-predicting malignant. This led us to try out different regularization techniques. First, we tried by adding two 0.5 dropout layers as well as L2 regularization (0.01).
 
 **Custom Model:  Dropout and L2 Regularization**
+
+![image](https://github.com/user-attachments/assets/ff357ed7-d70c-432e-a7fa-401cf277006b)
 
 The custom CNN with dropout and L2 regularization obtained an accuracy of 66%, an AUC of .64 and a malignant F1 score of .76. Though the accuracy was lower, the benign recall was higher than without regularization, showing that the model was learning not to rely as heavily on majority class guessing. These results led us to continue adding more regularization techniques. 
 
@@ -116,30 +134,46 @@ Our next attempt used dropout, L2 regularization (0.01) and class weights. Becau
 
 **Custom Model: Dropout, L2 Regularization, and Class Weights**
 
+![image](https://github.com/user-attachments/assets/b37695b2-09b0-46d2-ba5b-65b41557e58a)
+
+
+
 Using dropout, L2 regularization, and class weights obtained an accuracy of 62%, an AUC of .62 and a malignant F1 score of .73 . Again, while overall accuracy decreased, benign recall increased to .45.  
 Finally, we tried dropout with l2 and oversampling.
 
 **Custom Model: Dropout, L2 Regularization, Oversampling**  
-Our final attempt at balancing the classes was to create more benign data by augmenting the benign class pictures to get the same number of pictures for each class. We augmented/created 2758 benign images with rotation, zoom, flip, and horizontal and vertical shift. Everything else about our model remained the same. The following was our confusion matrix:![][image10]  
-![][image11]![][image12]  
+Our final attempt at balancing the classes was to create more benign data by augmenting the benign class pictures to get the same number of pictures for each class. We augmented/created 2758 benign images with rotation, zoom, flip, and horizontal and vertical shift. Everything else about our model remained the same. The following was our confusion matrix:
+![image](https://github.com/user-attachments/assets/5fa3a86c-3bc4-4b8e-8e31-aae68717197a)
+![image](https://github.com/user-attachments/assets/ff19f3f2-998e-4cfb-a6cb-89deb985ebb2)
+
+
 The custom CNN with dropout, L2 regularization and oversampling obtained an accuracy of 68%, an AUC of .66 and a malignant F1 score of .78. The benign recall score increased to .47.  This model had a higher accuracy than previous attempts while the benign recall score showed it was learning not to rely as heavily on majority class guessing.  This was our final scratch CNN model, since computational limits made training times unfeasible.
 
 **Custom Model on MIAS Dataset: Dropout, L2 Regularization, Oversampling**  
 Finally, we evaluated the previous model against the MIAS dataset, in order to evaluate the generalizability. 
 
+![image](https://github.com/user-attachments/assets/428ab70a-da00-4afe-af09-4b8bc07119db)
+
+
 The custom CNN trained with  Dropout, L2 Regularization, Oversampling had an accuracy of 44%, an AUC of 49% and a F1 malignant score .57 on the MIAS dataset. These poor results demonstrated that the model had learned CMMD specific features and was not very generalizable.
 
 #  Transfer Learning using ResNet50 
 
-	We used a pre-trained model ResNet50 on our dataset to extract features and finetune. Transfer learning is useful when there are computational limitations or limited data. Since we experienced long training time and overfitting with our from-scratch model, this was our next step. Transfer learning can also help us better generalize on different datasets since the pre-trained model has been trained on different categories of data. ResNet50 is a CNN model with 50 layers, it excels at image classification. It’s made up of convolutional layers with batch normalization and ReLU activation, which makes it powerful at learning edges, textures, and shape.   
-[![][image13]](https://towardsdatascience.com/the-annotated-resnet-50-a6c536034758/)
+We used a pre-trained model ResNet50 on our dataset to extract features and finetune. Transfer learning is useful when there are computational limitations or limited data. Since we experienced long training time and overfitting with our from-scratch model, this was our next step. Transfer learning can also help us better generalize on different datasets since the pre-trained model has been trained on different categories of data. ResNet50 is a CNN model with 50 layers, it excels at image classification. It’s made up of convolutional layers with batch normalization and ReLU activation, which makes it powerful at learning edges, textures, and shape.   
+![image](https://github.com/user-attachments/assets/c82a6087-214c-4165-862d-32651ba17f6a)
+
 
 **ResNet 50**  
 We froze the base model ResNet50, meaning the weights are not trainable. We then attached a new output layer in order to match our binary classification. The ResNet50 aims to extract features from our dataset, which we can pass to a few fine tuned layers in order to make the model better at our specific goal of identifying between malignant and benign.   
-![][image14]  
+![image](https://github.com/user-attachments/assets/b8bd0412-7a43-4bc0-97b0-2305dc4798a2)
+
 We also applied data augmentation to our training set to improve optimization and generalization. The test set was not augmented.  
-![][image15]![][image16]  
+![image](https://github.com/user-attachments/assets/8724b2e6-4dde-4c0d-8943-fd69a8d9259b)
+
 We used ReduceLROnPlateu to decrease learning rate when the value loss stops improving, which means our weights will be updated more slowly and doesn’t make aggressive changes. We also include class weights from the previous scratch model. 
+
+![image](https://github.com/user-attachments/assets/3d6e1743-f741-431c-8eca-90ec1851c73d)
+
 
 Our model was much better at detecting malignant cases, obtaining an F1 score of 0.73, compared to benign cases which got a score of 0.46. It also had more false negatives than false positives, which is undesirable for a cancer detection model, since false negatives mean cancerous tumors marked incorrectly as benign.
 
