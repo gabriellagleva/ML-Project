@@ -9,10 +9,7 @@ In the US, breast cancer makes up one-third of all new cancer cases in women eve
 While researching which models would be effective for classifying masses in breast tissue, we found Elkorany et al.’s paper from 2023 on breast cancer diagnosis, which mentions three pre-trained convolutional neural network (CNN) models that performed well when classifying breast cancer images: VGG16, InceptionV3, and ResNet (Elkorany et al., 2023). We first used a smaller dataset called MIAS to test out which of these 3 would be faster to train on, which we downloaded from Kaggle (https://www.kaggle.com/datasets/kmader/mias-mammography/data).   
 The MIAS data set has 332 1024 x 1024 pixel mammogram images, with information on malignant status and breast density. During our initial testing, we created separate models using the three pre-trained CNNs as feature extractors and a classifying layer. When attempting to classify breast density, we found that the MIAS data set was too small to produce meaningful results.
 
-<div align="center">
-  <img width="300" src="[https://github.com/user-attachments/assets/ea520497-405c-4785-bf4b-9fa109b33a41](https://miro.medium.com/v2/resize:fit:1100/format:webp/1*Nqg_xWC02eXY1zWuk_hizA.png)">
-</div>
-<p align="center">
+![image](https://github.com/user-attachments/assets/6bd8f5b3-e5b0-471b-a6de-1df188adfee3)
 
 
 
